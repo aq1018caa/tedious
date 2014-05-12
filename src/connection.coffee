@@ -493,7 +493,7 @@ class Connection extends EventEmitter
     @messageIo.tlsNegotiationStarting(@securePair)
 
   sendDataToTokenStreamParser: (data) ->
-    @tokenStreamParser.addBuffer(data)
+    process.nextTick => @tokenStreamParser.addBuffer(data)
 
   sendInitialSql: ->
     payload = new SqlBatchPayload(@getInitialSql(), @currentTransactionDescriptor(), @config.options)
