@@ -146,7 +146,7 @@ class Connection extends EventEmitter
             sqlRequest = @request
             @request = undefined
             sqlRequest.callback(RequestError("Canceled.", 'ECANCEL'))
-          
+
           # else: skip all messages, now we are only interested about cancel acknowledgement (2.2.1.6)
 
     FINAL:
@@ -245,13 +245,13 @@ class Connection extends EventEmitter
         @loginError = ConnectionError "Server responded with unknown TDS version."
         @loggedIn = false
         return
-      
+
       unless token.interface
         # unsupported interface
         @loginError = ConnectionError "Server responded with unsupported interface."
         @loggedIn = false
         return
-        
+
       # use negotiated version
       @config.options.tdsVersion = token.tdsVersion
       @loggedIn = true
@@ -275,7 +275,7 @@ class Connection extends EventEmitter
             columns[col.colName] = col for col in token.columns when not columns[col.colName]?
           else
             columns = token.columns
-            
+
           @request.emit('columnMetadata', columns)
         else
           @emit 'error', new Error "Received 'columnMetadata' when no sqlRequest is in progress"
@@ -331,13 +331,13 @@ class Connection extends EventEmitter
     @tokenStreamParser.on('done', (token) =>
       if @request
         @request.emit('done', token.rowCount, token.more, @request.rows)
-        
+
         if token.rowCount != undefined
           @request.rowCount += token.rowCount
 
         if @config.options.rowCollectionOnDone
           @request.rows = []
-        
+
         if token.attention
           @request.canceled = true
     )
@@ -557,7 +557,7 @@ set transaction isolation level read committed'''
 
     if @config.options.tdsVersion < "7_2"
       return callback RequestError "Transactions are not supported on TDS 7.1."
-      
+
     transaction = new Transaction(name, isolationLevel)
     @transactions.push(transaction)
 
@@ -603,7 +603,7 @@ set transaction isolation level read committed'''
       )
 
       @transitionTo(@STATE.SENT_CLIENT_REQUEST)
-  
+
   cancel: ->
     if @state != @STATE.SENT_CLIENT_REQUEST
       message = "Requests can only be canceled in the #{@STATE.SENT_CLIENT_REQUEST.name} state, not the #{@state.name} state"
